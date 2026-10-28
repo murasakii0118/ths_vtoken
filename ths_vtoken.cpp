@@ -33,7 +33,7 @@ extern const uint32_t ths_vToken_core_size;
 
 namespace {
 
-const char *kVersion = "1.0.0";
+const char *kVersion = "1.0.1";
 
 const char *kDefaultChallengeUrl =
     "https://data.10jqka.com.cn/financial/ggjy/field/enddate/order/desc/page/1/ajax/1/";
@@ -94,6 +94,9 @@ bool http_get_once(const std::string &url, const std::string &referer, std::stri
     httplib::Client cli(scheme + "://" + host);
     cli.set_follow_location(true);
     cli.enable_server_certificate_verification(false);
+    /* 本机 IPv6 到部分 CDN（s.thsi.cn 等）链路不通，而 getaddrinfo 往往先返回 AAAA，
+       导致连接超时；这里强制走 IPv4。 */
+    cli.set_address_family(AF_INET);
     cli.set_keep_alive(false); /* 每次新建连接，避开 CDN 的空闲连接回收 */
     cli.set_connection_timeout(10);
     cli.set_read_timeout(25);

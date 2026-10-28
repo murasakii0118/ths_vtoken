@@ -24,6 +24,7 @@ static int probe(const std::string &host, const std::string &path, const std::st
     httplib::Client cli(host);
     cli.set_follow_location(true);
     cli.enable_server_certificate_verification(false);
+    cli.set_address_family(AF_INET); /* 与库保持一致：本机 IPv6 到部分 CDN 不通 */
     cli.set_connection_timeout(10);
     cli.set_read_timeout(25);
 
